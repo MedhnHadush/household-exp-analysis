@@ -47,6 +47,8 @@ Download the data from <a href="https://drive.google.com/file/d/1V4yCjs9Ug5-b8MS
 |-- analysis.py
 |-- output
     |-- national_share.csv
+    |-- lorez_cuve.png
 |-- README.md
 |-- requirements.txt
+|-- technical_report.pdf
 ```
