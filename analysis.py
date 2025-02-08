@@ -176,10 +176,10 @@ if __name__ == "__main__":
     df_households, df_expenses, df_products = load_data()
     
     #sanity check
-    #sanity_check(df_households, df_expenses, df_products)
+    sanity_check(df_households, df_expenses, df_products)
 
     #comput national share of expenditure by product
-    #compute_national_share(df_households, df_expenses, df_products)
+    compute_national_share(df_households, df_expenses, df_products)
 
     #draw lorenz curve, calculate the gini coef
     compute_lorenz_curve_and_gini(df_households, df_expenses)
