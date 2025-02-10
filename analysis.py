@@ -97,7 +97,7 @@ def compute_national_share(df_households, df_expenses, df_products):
     # Calculate weighted expenditure
     df_expenses['weighted_expenditure'] = df_expenses['annual_expenditure'] * df_expenses['weight']
 
-    # Aggregate expenditure at COICOP Level 1
+    # Aggregate expenditure at COICOP Level 1 and comput the share
     df_national_expenditure = df_expenses.groupby('coicop_category')['weighted_expenditure'].sum()
     total_expenditure = df_national_expenditure.sum()
     df_national_share = (df_national_expenditure / total_expenditure) * 100
@@ -142,13 +142,13 @@ def compute_lorenz_curve_and_gini(df_households, df_expenses):
     total_expenditure = total_expenditure.sort_values("per_capita_expenditure")
 
     # Compute cumulative population share and expenditure share
-    total_expenditure["cum_pop"] = np.cumsum(total_expenditure["hh_size"] * total_expenditure["weight"]) / np.sum(total_expenditure["hh_size"] * total_expenditure["weight"])
-    total_expenditure["cum_exp"] = np.cumsum(total_expenditure["annual_expenditure"]*total_expenditure["weight"]) / np.sum(total_expenditure["annual_expenditure"]*total_expenditure["weight"])
+    total_expenditure["cum_pop"] = np.cumsum(total_expenditure["hh_size"] * total_expenditure["weight"] / np.sum(total_expenditure["hh_size"] * total_expenditure["weight"]))
+    total_expenditure["cum_exp"] = np.cumsum(total_expenditure["annual_expenditure"]*total_expenditure["weight"]/ np.sum(total_expenditure["annual_expenditure"]*total_expenditure["weight"]))
     
     #compute 50% percentile
     nearest_fifty = np.argmin(np.abs(total_expenditure["cum_pop"] - 0.5))
     fifty_percentile_share =(100* total_expenditure["cum_exp"].values[nearest_fifty]).round(2)
-    print(f"50% of the population contributes to {fifty_percentile_share}% expenditure")
+    print(f"The bottom 50% of the population contributes a {fifty_percentile_share}% of the total expenditure")
 
     # Plot Lorenz Curve
     plt.figure(figsize=(6, 6))
@@ -168,7 +168,7 @@ def compute_lorenz_curve_and_gini(df_households, df_expenses):
     # Compute Gini Coefficient
     lorenz_x = total_expenditure["cum_pop"].values
     lorenz_y = total_expenditure["cum_exp"].values
-    gini = 1 - 2 * np.trapezoid(lorenz_y, lorenz_x)
+    gini = 1 - 2 * np.trapezoid(lorenz_y, lorenz_x) # (0.5 - np.trapezoid(lorenz_y, lorenz_x))/0.5
     print(f"\nGini Coefficient: {gini:.4f}")
 
 if __name__ == "__main__":
